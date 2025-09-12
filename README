@@ -1,0 +1,154 @@
+#******************************************************************************
+************ PROGRAM FOR SIMULATION OF LATTICE YANG-MILLS THEORIES ***********
+******************************************************************************
+
+
+** ACTION
+*****************************************************
+The action used is the standard Wilson action, which for the N colors can be
+generically written as the sum of
+
+-beta*(1/N)\sum_{plaquettes} Re(Tr(paquette))
+
+and possibly a theta therm. If --enable-imaginary-theta is used during
+configuration an imaginary theta term is used of the form
+
+-theta_im*Top_charge
+
+where the simplest discretization with definite parity of the topological
+charge is used (see later "A note on the topological charge" for more details).
+
+In yang_mills_tracedef a trace deformation is also added to the action, of the
+form
+
+\sum_{sites on a spatial slice} \sum_{i=0}^{N/2} h_i|Tr(polyakov^{i+1})|^2
+
+The update is performed by means of heatbath and overrelaxation updates (and in
+some case also Metropolis updates) implemented a la Cabibbo-Marinari.
+
+In yang_mills_higgs the action is 
+
+-beta*(1/N)\sum_{plaquettes} Re(Tr(paquette)) 
+-N_higgs*higgs_beta\sum_{r, mu}\sum_{i=1}^{N_higgs} Re([H_r^{(i)}]^{\dag} U_{r, mu} H_{r+mu}^{(i)} )
+
+where the sum on mu is just on positive orientations and Higgs fields are
+normalized according to
+
+\sum_{i=1}^{N_higgs} \|H_r^{(i)}\|^2 = 1 
+
+for every site r.
+
+
+** OTHER CONFIGURE PARAMETERS
+*****************************************************
+
+The choice of the gauge group happens at configuration time through the macro
+N_c (the gauge group is SuN).  As an example, to simulate the SU(5) gauge
+theory the program has to be configured using
+
+./configure N_c=5
+
+Relevant configure options are
+
+--enable-use-openmp     to enable the use of openmp
+--enable-use-theta      to enable the use of an imaginary theta term
+
+and the following macro are availbale
+
+N_c          the number of colors (default 2)
+Num_levels   the number of levels in multilevel (default 1)
+Num_threads  number of threads to be used in OpenMP (default 1)
+ST_dim       spacetime dimensionality (default 4)
+N_higgs      the number of Higgs fields (default 1)
+
+
+After the configuration, the compilation is performed as usual by
+make
+
+Defining the macro DEBUG several sanity checks are activated, while the macros
+OPT_MULTIHIT and OPT_MULTILEVEL can be used to optimize the number of multihit
+steps and the number of updates to be used in the multilevel algorithm.
+
+
+** INPUT FILE AND SOME CONVENTIONS
+*****************************************************
+
+A template input file is created when calling executables without input file
+and everything following # (up to carriage return) in the input file is
+interpreted as a comment.
+
+Some conventions used in the code are the following:
+
+time is direction 0 and the numbers follosing "size" in the imput are in the
+order "time space1 space2 ..."
+
+when computing Polyakov loop correlators, Polyakov loops are separated along
+direction 1 and, when computing flux tube profiles, the transverse direction is
+direction 2 
+
+level 0 of the multilevel is the one corresponding to the largest
+timeslice.
+
+
+** A NOTE ON THE TOPOLOGICAL CHARGE
+*********************************************************
+
+Topology for the general group: in the continuum the topological charge is
+defined in 4 space-time dimensions by
+
+Q=\frac{1}{64 \pi^2} \int \epsilon_{\mu\nu\rho\sigma} 
+   F_{\mu\nu}^a F_{\rho\sigma}^a d^x
+
+with the normalization Tr(T_iT_j)=K \delta_{ij} such that the longest root of
+the representation is normalized to 1.
+[see C. W. Bernard, N. H. Christ, A. H. Guth, E. J. Weinberg 
+ Phys. Rev. D 16, 2967 (1977) ]
+
+For SU(N) this base is that of the generalized Gell-Mann matrices divided by
+two and in this representation Tr(T^aT^b)=(1/2)\delta^{ab}, so that 
+
+F_{\mu\nu}^aF_{\rho\sigma}^a=2Tr(F_{\mu\nu}F_{\rho\sigma})
+
+and thus 
+
+Q=\frac{1}{32 \pi^2} \int \epsilon_{\mu\nu\rho\sigma} 
+Tr(F_{\mu\nu} F_{\rho\sigma}) d^x
+
+The discretization used on the lattice is obtained by using the clover form of
+the discretized field-strenth, i.e. the clover Q_{\mu\nu} is given by
+
+Q_{\mu\nu}  ~ 4 + 4 i a^2 F_{\mu\nu}
+
+and thus
+
+F_{\mu\nu} = \frac{1}{8i}( Q_{\mu\nu} - Q_{\mu\nu}^{dag} )  
+
+By using this expression we get
+
+Tr(F_{\mu\nu}F_{\rho\sigma}) = 
+          =-\frac{1}{2^5} ReTr(Q_{\mu\nu}[Q_{\rho\sigma}-Q_{\rho\sigma}^{dag}])
+
+We now note that of the 24 terms
+\epsilon_{\mu\nu\rho\sigma}F_{\mu\nu}F_{\rho\sigma} only 3 are independent:
+
+2: single exchange on the first term   F_{\mu\nu}F_{\rho\sigma} ->
+                                               F_{\nu\mu}F_{\rho\sigma}
+2: single exchange on the second term  F_{\mu\nu}F_{\rho\sigma} -> 
+                                               F_{\mu\nu}F_{\sigma\rho}
+2: exchage                             F_{\mu\nu}F_{\rho\sigma} -> 
+                                               F_{\rho\sigma}F_{\mu\nu} 
+3: remaining permutations of indices: e.g 0123, 0213, 0312
+
+thus 
+
+\frac{1}{32} \epsilon_{\mu\nu\rho\sigma}Tr(F_{\mu\nu}F_{\rho\sigma})=
+
+ =-\frac{1}{32} * \frac{1}{2^5} * 2^3 * [ sum on independent permutations
+              of \epsilon_{\mu\nu\rho\sigma} 
+              ReTr(Q_{\mu\nu}[Q_{\rho\sigma}-Q_{\rho\sigma}^{dag}]) ]
+  
+ =-\frac{1}{128} [ sum on independent permutations
+              of \epsilon_{\mu\nu\rho\sigma} 
+              ReTr(Q_{\mu\nu}[Q_{\rho\sigma}-Q_{\rho\sigma}^{dag}]) ]
+
+This is the expression used in the code. 
