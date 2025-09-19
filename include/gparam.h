@@ -63,6 +63,7 @@ typedef struct GParam {
   // output file names
   char d_conf_file[STD_STRING_LENGTH];
   char d_higgs_conf_file[STD_STRING_LENGTH];
+  char d_twist_file[STD_STRING_LENGTH];
   char d_data_file[STD_STRING_LENGTH];
   char d_mon_file[STD_STRING_LENGTH];
   char d_log_file[STD_STRING_LENGTH];
@@ -85,6 +86,7 @@ void init_data_file(FILE **dataf, GParam const * const param);
 void init_mon_file(FILE **monof, GParam const * const param);
 
 void print_parameters_local(GParam const * const param, time_t time_start, time_t time_end);
+void print_parameters_local_twist(GParam const * const param, time_t time_start, time_t time_end);
 
 void print_parameters_polycorr(GParam * param, time_t time_start, time_t time_end);
 void print_parameters_polycorr_higgs(GParam * param, time_t time_start, time_t time_end, double acc);
