@@ -183,6 +183,14 @@ long sisp_and_t_to_si(Geometry const * const geo, long sisp, int t);
 
 void si_to_sisp_and_t(long *sisp, int *t, Geometry const * const geo, long si);
 
+//plane i-j -> single index, for twist factors
+int	dirs_to_si(int const i, int const j)
+	{
+	if(i<j) return i*(2*STDIM - 3 - i)/2 + j - 1;						//clockwise
+	if(j<i) return j*(2*STDIM - 3 - j)/2 + i - 1 + STDIM*(STDIM-1)/2;	//anticlockwise
+	fprintf(stderr, "Directions can't be the same! (%s, %d)\n", __FILE__, __LINE__);
+	exit(EXIT_FAILURE);
+	}
 
 void test_geometry(Geometry const * const geo)
   {

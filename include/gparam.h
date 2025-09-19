@@ -16,6 +16,9 @@ typedef struct GParam {
   double d_theta;
   double d_higgs_beta;
 
+  // twist parameter
+  int d_k_twist[STDIM*(STDIM-1)/2];
+
   // simulation details
   int d_sample;
   int d_thermal;

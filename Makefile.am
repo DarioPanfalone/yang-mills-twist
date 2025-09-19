@@ -6,6 +6,7 @@ bin_PROGRAMS = conf_check \
                debug_vecs \
                yang_mills_higgs \
                yang_mills_local \
+               yang_mills_local_twist \
                yang_mills_polycorr \
                yang_mills_polycorr_long \
                yang_mills_polycorr_higgs \
@@ -169,6 +170,9 @@ yang_mills_higgs_SOURCES=./src/yang_mills_higgs.c \
                           $(everything)
 
 yang_mills_local_SOURCES=./src/yang_mills_local.c \
+                          $(everything)
+
+yang_mills_local_twist_SOURCES=./src/yang_mills_local_twist.c \
                           $(everything)
 
 yang_mills_polycorr_SOURCES=./src/yang_mills_polycorr.c \

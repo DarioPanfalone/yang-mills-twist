@@ -20,6 +20,9 @@ typedef struct Gauge_Conf {
 
   GAUGE_GROUP **lattice;       // [volume] [STDIM]
   GAUGE_GROUP ***clover_array; // [volume] [STDIM] [STDIM]
+  
+  //for twisted boundary condition
+  double complex **Z; //Z [volume] [STDIM*(STDIM-1)], factor to implement the twist on the links in the boundary
 
   // for computing the polyakov loop correlator with multilevel
   TensProd ***ml_polycorr;   // [NLEVELS] [d_size[0]/d_ml_step[i]] [space_vol]
@@ -69,6 +72,10 @@ void write_conf_on_file_back(Gauge_Conf const * const GC,
 void init_gauge_conf_from_gauge_conf(Gauge_Conf *GC,
                                      Gauge_Conf const * const GC2,
                                      Geometry const * const geo);
+void init_twist_cond_from_file_with_name(Gauge_Conf *GC, 
+                              Geometry const * const geo,
+                              GParam const * const param,
+            									char const * const filename);
 void init_gauge_conf_from_gauge_conf_noclover(Gauge_Conf *GC,
                                               Gauge_Conf const * const GC2,
                                               Geometry const * const geo);
@@ -86,6 +93,8 @@ void write_polycorr_on_file(Gauge_Conf const * const GC,
                             Geometry const * const geo,
                             GParam const * const param,
                             int iteration);
+void read_twist_cond_from_file_with_name(int *x_mu, int *x_nu, 
+				                    Geometry const * const param, char const * const filename);
 void read_polycorr_from_file(Gauge_Conf const * const GC,
                              Geometry const * const geo,
                              GParam const * const param,

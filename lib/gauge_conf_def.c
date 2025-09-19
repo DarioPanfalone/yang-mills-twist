@@ -16,6 +16,8 @@
 #include"../include/gauge_conf.h"
 #include"../include/tens_prod.h"
 
+#define DNPLANES (STDIM * (STDIM - 1))
+
 void init_gauge_conf(Gauge_Conf *GC, Geometry const * const geo, GParam const * const param)
   {
   long r, j;
@@ -83,6 +85,57 @@ void init_gauge_conf(Gauge_Conf *GC, Geometry const * const geo, GParam const * 
     read_gauge_conf(GC, geo, param);
     }
   }
+
+void read_twist_cond_from_file_with_name(int *x_mu, int *x_nu, Geometry const * const param, char const * const filename)
+	{
+	FILE *fp;
+	int err, i, tmp_i, dimension;
+
+	fp=fopen(filename, "r"); // open the configuration file
+	if(fp==NULL)
+		{
+		fprintf(stderr, "Error in opening the file %s (%s, %d)\n", filename, __FILE__, __LINE__);
+		exit(EXIT_FAILURE);
+		}
+	else // read the configuration
+		{
+		err=fscanf(fp, "%d", &dimension);
+		if(err!=1)
+			{
+			fprintf(stderr, "Error in reading the file %s (%s, %d)\n", filename, __FILE__, __LINE__);
+			exit(EXIT_FAILURE);
+			}
+		if(dimension != STDIM)
+			{
+			fprintf(stderr, "The space time dimension of the configuration (%d) does not coincide with the one of the global parameter (%d)\n",
+				dimension, STDIM);
+			exit(EXIT_FAILURE);
+			}
+	
+		for(i=0; i<STDIM; i++)
+			{
+			err=fscanf(fp, "%d", &tmp_i);
+			if(err!=1)
+				{
+				fprintf(stderr, "Error in reading the file %s (%s, %d)\n", filename, __FILE__, __LINE__);
+				exit(EXIT_FAILURE);
+				}
+			if(tmp_i != param->d_size[i])
+				{
+				fprintf(stderr, "The size of the configuration lattice does not coincide with the one of the global parameter\n");
+				exit(EXIT_FAILURE);
+				}
+			}
+		
+		err=fscanf(fp, "%*d %*d %d %d ", x_mu, x_nu);
+		if(err!=2)
+			{
+			fprintf(stderr, "Error in reading the file %s (%s, %d)\n", filename, __FILE__, __LINE__);
+			exit(EXIT_FAILURE);
+			}
+		fclose(fp);
+		}
+	}
 
 
 void read_gauge_conf(Gauge_Conf *GC, Geometry const * const geo, GParam const * const param)
@@ -183,6 +236,56 @@ void read_gauge_conf(Gauge_Conf *GC, Geometry const * const geo, GParam const * 
     }
   }
 
+// initialization of the twist factors
+void init_twist_cond_from_file_with_name(Gauge_Conf *GC, Geometry const * const geo, GParam const * const param, char const * const filename)
+	{
+	long r;
+	int i, j, x_mu, x_nu;
+	int cartcoord[STDIM];
+	
+	//allocation of Z[r][j]  	
+	if(posix_memalign((void **)&(GC->Z), (size_t)INT_ALIGN, (size_t)geo->d_volume*sizeof(long*)) != 0)
+		{
+		fprintf(stderr, "Problems allocating an array of ptrs to long! (%s, %d)\n", __FILE__, __LINE__);
+		exit(EXIT_FAILURE);
+		}
+	
+	for(r=0; r<(geo->d_volume); r++) {	
+    if(posix_memalign((void **)&(GC->Z[r]), (size_t)INT_ALIGN, (size_t)DNPLANES*sizeof(long*)) != 0)
+		{
+		fprintf(stderr, "Problems allocating an array of ptrs to long! (%s, %d)\n", __FILE__, __LINE__);
+		exit(EXIT_FAILURE);
+		}
+  }
+	
+	// initialization of Z[r][j]
+	
+	// start initializing them to 1
+	for(r=0; r<geo->d_volume; r++)
+		for(j=0; j<DNPLANES; j++)
+				GC->Z[r][j]=1.0+0.0*I;
+	
+	x_mu = 0;
+	x_nu = 0;
+	
+	if(param->d_start==2) // initialize from stored conf
+		{
+		read_twist_cond_from_file_with_name(&x_mu, &x_nu, geo, filename);
+		}
+	
+	// assign Z on positions x_mu, x_nu, 
+	for(r=0; r<geo->d_volume; r++)
+		{
+		si_to_cart(cartcoord, r, geo);
+		for(i=0; i<STDIM; i++)
+			for(j=i+1; j<STDIM; j++)
+				if (cartcoord[i] == x_mu && cartcoord[j] == x_nu)
+					{
+					GC->Z[r][dirs_to_si(i,j)] = cexp(I*PI2*(param->d_k_twist[dirs_to_si(i,j)])/(double)NCOLOR);	//for clockwise plaquette
+					GC->Z[r][dirs_to_si(j,i)] = conj(GC->Z[r][dirs_to_si(i,j)]);								//for anticlockwise plaquette
+					}
+		}
+}
 
 void free_gauge_conf(Gauge_Conf *GC, Geometry const * const geo)
   {

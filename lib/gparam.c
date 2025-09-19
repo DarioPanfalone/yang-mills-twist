@@ -82,7 +82,12 @@ void readinput(char *in_file, GParam *param)
     param->d_higgs_beta=0.0;
 
     param->d_smearingstep = 0;
-
+	  // to avoid possible mistakes with uninitialized twist factors
+	  for (i=0; i<STDIM*(STDIM-1)/2; i++)
+	    	{
+	    	param->d_k_twist[i] = 0;
+		    }
+		
     input=fopen(in_file, "r");  // open the input file
     if(input==NULL)
       {
@@ -485,6 +490,21 @@ void readinput(char *in_file, GParam *param)
                     }
                   param->d_poly_dist_max = temp_i;
                   }
+
+			    else if(strncmp(str, "k_twist", 7)==0)
+				       	{
+					      for(i=0;i<STDIM*(STDIM-1)/2;i++)
+					      {
+					      err=fscanf(input, "%d", &temp_i);
+					      if(err!=1)
+					      {
+				      	fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+				      	exit(EXIT_FAILURE);
+					      }
+					      param->d_k_twist[i]=temp_i;
+					      }
+					      }
+
            else if(strncmp(str, "poly_dist_step", 14)==0)
                   {
                   err = fscanf(input, "%d", &temp_i);

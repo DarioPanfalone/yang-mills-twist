@@ -2,7 +2,7 @@
 #define YM_LOCAL_C
 
 #include"../include/macro.h"
-
+#define WITH_TWIST 1 
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>

@@ -25,6 +25,7 @@ extern long (*lex_to_si)(long lex, Geometry const * const geo);          // lexi
 extern long (*si_to_lex)(long si, Geometry const * const geo);           // lexicographic -> single index
 extern long (*sisp_and_t_to_si_compute)(long sisp, int t, Geometry const * const geo);            // single index spatial and time -> single index tot
 extern void (*si_to_sisp_and_t_compute)(long *sisp, int *t, long si, Geometry const * const geo); // single index tot -> single index spatial and time
+int	dirs_to_si(int const i, int const j); //plane i-j -> single index, for twist factors
 
 // general functions
 void init_geometry(Geometry *geo, int insize[STDIM]);
