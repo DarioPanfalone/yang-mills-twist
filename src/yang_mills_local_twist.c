@@ -137,15 +137,18 @@ void print_template_input(void)
     fprintf(fp, "size 4 4 4 4\n");
     fprintf(fp,"\n");
     fprintf(fp, "beta 5.705\n");
-    fprintf(fp, "theta 1.5\n");
+    fprintf(fp, "theta 0\n");
     fprintf(fp,"\n");
     fprintf(fp, "sample    10\n");
     fprintf(fp, "thermal   0\n");
     fprintf(fp, "overrelax 5\n");
     fprintf(fp, "measevery 1\n");
+    fprintf(fp,"# Twist parameters\n");
+  	fprintf(fp,"k_twist 0 0 0 1 0 0 # twist parameter on the plane (0,1), (0,2), ..., (0,STDIM-1), (1, 2), ...\n");
+  	fprintf(fp,"\n");
     fprintf(fp, "monomeas  0  # 1=monopoles measures are performed\n");
     fprintf(fp,"\n");
-    fprintf(fp, "start                   0  # 0=ordered  1=random  2=from saved configuration\n");
+    fprintf(fp, "start                   3  # 0=ordered  1=random  2=from saved configuration 3=ordered with twisted bc\n");
     fprintf(fp, "saveconf_back_every     5  # if 0 does not save, else save backup configurations every ... updates\n");
     fprintf(fp, "saveconf_analysis_every 5  # if 0 does not save, else save configurations for analysis every ... updates\n");
     fprintf(fp, "\n");
@@ -154,6 +157,7 @@ void print_template_input(void)
     fprintf(fp,"\n");
     fprintf(fp, "#output files\n");
     fprintf(fp, "conf_file  conf.dat\n");
+    fprintf(fp, "twist_file twist.dat\n");
     fprintf(fp, "data_file  dati.dat\n");
     fprintf(fp, "mon_file   mon.dat\n");
     fprintf(fp, "log_file   log.dat\n");
