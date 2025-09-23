@@ -347,56 +347,6 @@ void init_twist_cond_from_file_with_name(Gauge_Conf *GC, Geometry const * const 
 					}
 		}
 }
-void read_twist_cond_from_file_with_name(int *x_mu, int *x_nu, Geometry const * const param, char const * const filename)
-	{
-	FILE *fp;
-	int err, i, tmp_i, dimension;
-
-	fp=fopen(filename, "r"); // open the configuration file
-	if(fp==NULL)
-		{
-		fprintf(stderr, "Error in opening the file %s (%s, %d)\n", filename, __FILE__, __LINE__);
-		exit(EXIT_FAILURE);
-		}
-	else // read the configuration
-		{
-		err=fscanf(fp, "%d", &dimension);
-		if(err!=1)
-			{
-			fprintf(stderr, "Error in reading the file %s (%s, %d)\n", filename, __FILE__, __LINE__);
-			exit(EXIT_FAILURE);
-			}
-		if(dimension != STDIM)
-			{
-			fprintf(stderr, "The space time dimension of the configuration (%d) does not coincide with the one of the global parameter (%d)\n",
-				dimension, STDIM);
-			exit(EXIT_FAILURE);
-			}
-	
-		for(i=0; i<STDIM; i++)
-			{
-			err=fscanf(fp, "%d", &tmp_i);
-			if(err!=1)
-				{
-				fprintf(stderr, "Error in reading the file %s (%s, %d)\n", filename, __FILE__, __LINE__);
-				exit(EXIT_FAILURE);
-				}
-			if(tmp_i != param->d_size[i])
-				{
-				fprintf(stderr, "The size of the configuration lattice does not coincide with the one of the global parameter\n");
-				exit(EXIT_FAILURE);
-				}
-			}
-		
-		err=fscanf(fp, "%*d %*d %d %d ", x_mu, x_nu);
-		if(err!=2)
-			{
-			fprintf(stderr, "Error in reading the file %s (%s, %d)\n", filename, __FILE__, __LINE__);
-			exit(EXIT_FAILURE);
-			}
-		fclose(fp);
-		}
-	}
 
 void free_gauge_conf(Gauge_Conf *GC, Geometry const * const geo)
   {
@@ -491,6 +441,7 @@ void write_conf_on_file_with_name(Gauge_Conf const * const GC,
   }
 
 void write_twist_on_file_with_name(Gauge_Conf const * const GC,
+                  Geometry const * const geo,
 									GParam const * const param,
 									char const * const namefile)
 	{
@@ -508,7 +459,7 @@ void write_twist_on_file_with_name(Gauge_Conf const * const GC,
 		fprintf(fp, "%d ", STDIM);
 		for(i=0; i<STDIM; i++)
 			{
-			fprintf(fp, "%d ", param->d_size[i]);
+			fprintf(fp, "%d ", geo->d_size[i]);
 			}
 		fprintf(fp, "\n");
 		
@@ -527,13 +478,13 @@ void write_twist_on_file_with_name(Gauge_Conf const * const GC,
 		
 		if (twisted_bc == 1) // find twist cartcoord on plane cartcoord[i] = 0 for i != mu, nu (no need to read all volume)
 			{
-			for(i=0; i<param->d_size[mu]; i++)
+			for(i=0; i<geo->d_size[mu]; i++)
 				{
 				cartcoord[mu] = i;
-				for(j=0; j<param->d_size[nu]; j++)
+				for(j=0; j<geo->d_size[nu]; j++)
 					{
 					cartcoord[nu] = j;
-					if (cabs(GC->Z[cart_to_si(cartcoord, param)][dirs_to_si(mu,nu)] - (1.0+0.0*I))> MIN_VALUE)
+					if (cabs(GC->Z[cart_to_si(cartcoord, geo)][dirs_to_si(mu,nu)] - (1.0+0.0*I))> MIN_VALUE)
 						{
 						fprintf(fp, "%d %d %d %d \n", mu, nu, i, j);
 						}

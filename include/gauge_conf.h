@@ -96,6 +96,7 @@ void write_polycorr_on_file(Gauge_Conf const * const GC,
                             GParam const * const param,
                             int iteration);
 void write_twist_on_file_with_name(Gauge_Conf const * const GC,
+                            Geometry const * const geo, 
           									GParam const * const param,
 				          					char const * const namefile);
 void read_twist_cond_from_file_with_name(int *x_mu, int *x_nu, 
