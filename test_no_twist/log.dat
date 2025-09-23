@@ -1,0 +1,30 @@
++-----------------------------------------+
+| Simulation details for yang_mills_local |
++-----------------------------------------+
+
+number of colors: 3
+spacetime dimensionality: 3
+
+lattice: 8x8x8
+
+beta: 5.7050000000
+
+sample:    100
+thermal:   0
+overrelax: 5
+measevery: 1
+monopoles: 0
+
+start:                   1
+saveconf_back_every:     0
+saveconf_analysis_every: 50
+
+coolsteps:      3
+coolrepeat:     5
+
+randseed: 0
+
+Simulation time: 1.000 seconds
+
+Little endian machine
+

@@ -128,9 +128,9 @@ void init_gauge_conf(Gauge_Conf *GC, Geometry const * const geo, GParam const * 
 			}
 		
 		GC->update_index=0;
-		for(r=0; r<(param->d_volume); r++)
+		for(r=0; r<(geo->d_volume); r++)
 			{
-			si_to_cart(cartcoord, r, param);
+			si_to_cart(cartcoord, r, geo);
 			for(i=0; i<STDIM; i++) one(&(GC->lattice[r][i])); // all links set to one
 			if (twisted_bc == 1) //overwrite links on the twisted plane
 				{
