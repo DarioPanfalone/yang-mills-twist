@@ -461,7 +461,7 @@ AUTOMAKE = ${SHELL} '/home/dario/Scrivania/yang-mills-twist/missing' automake-1.
 AWK = mawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -O3 -Wno-deprecated-declarations
+CFLAGS =  -O3 -Wno-deprecated-declarations
 CPPFLAGS = 
 CSCOPE = cscope
 CTAGS = ctags

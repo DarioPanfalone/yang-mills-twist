@@ -12,7 +12,7 @@ k_twist 1 0 0 # twist parameter on the plane (0,1), (0,2), ..., (0,STDIM-1), (1,
 
 monomeas  0  # 1=monopoles measures are performed
 
-start                   3  # 0=ordered  1=random  2=from saved configuration 3=ordered with twisted bc
+start                   1  # 0=ordered  1=random  2=from saved configuration 3=ordered with twisted bc
 saveconf_back_every     100000  # if 0 does not save, else save backup configurations every ... updates
 saveconf_analysis_every 0  # if 0 does not save, else save configurations for analysis every ... updates
 

@@ -137,7 +137,49 @@ void compute_polyakov_tube_disc_highT(Gauge_Conf const *const GC,
       my_ptrs->aux_poly_i[rsp] = imtr(&matrix);
    }
 }
+/*
+void compute_polyakov_tube_mom_highT(Gauge_Conf const *const GC,
+                                      Geometry const *const geo,
+                                      Tube_disc_ptrs *my_ptrs)
+{
+   long rsp;
+   for (int y=0;y<geo->d_size[2];y++){
+        my_ptrs -> aux_mom_poly_r[y] = 0;
+        my_ptrs -> aux_mom_poly_i[y] = 0;
+   }
+   // compute all the polyakov
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for num_threads(NTHREADS) private(rsp)
+   #endif
+   for (rsp=0; rsp<geo->d_space_vol; rsp++) {
+      long r;
+      GAUGE_GROUP matrix;
 
+      r=sisp_and_t_to_si(geo, rsp, 0);
+
+      one(&matrix);
+      
+      for(int t=0; t<geo->d_size[0]; t++)
+         {
+         times_equal(&matrix, &(GC->lattice[r][0]));
+         r=nnp(geo, r, 0);
+         }
+      int cart[STDIM];
+      si_to_cart(cart,r,geo); 
+      int y=cart[2];
+      int x=cart[1];
+      
+      double = ((2*PI)/(geo -> d_inv_space_vol*NCOLOR));
+      phase = np.exp(- I * k * x);
+
+      my_ptrs -> aux_mom_poly_r[y] += retr(phase)*retr(&matrix) - imtr(phase)*imtr(&matrix);
+      my_ptrs -> aux_mom_poly_i[y] += imtr(phase)*retr(&matrix) + retr(phase)*imtr(&matrix);
+
+      //my_ptrs->aux_poly_r[rsp] = retr(&matrix);
+      //my_ptrs->aux_poly_i[rsp] = imtr(&matrix);
+   }
+}
+*/
 void compute_plaquette_columns(Gauge_Conf const * const GC,
                                Geometry const * const geo,
                                GParam const * const param,

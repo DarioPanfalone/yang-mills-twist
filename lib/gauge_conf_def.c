@@ -89,16 +89,13 @@ void init_gauge_conf(Gauge_Conf *GC, Geometry const * const geo, GParam const * 
   if(param->d_start==3) // cold twisted start (only for one twist parameter)
 		{
 		int i, j, k_mu_nu, mu, nu, twisted_bc, cartcoord[STDIM];
-		double complex zf;
 		GAUGE_GROUP aux, Pmatrix, Qmatrix;
 		
 		// to suppress gcc warning "maybe-uninitialized"
 		mu = 0;
 		nu = 0;
 		
-		if ((NCOLOR%2)==0) zf = cexp(I*PI/(double)NCOLOR);
-		else zf = 1.0 + 0.0*I;
-		
+
 		twisted_bc = 0;	// check if twist is non trivial and save parameters (only last occurence)
 		for(i=0; i<STDIM; i++)
 			for(j=i+1; j<STDIM; j++)
@@ -110,9 +107,33 @@ void init_gauge_conf(Gauge_Conf *GC, Geometry const * const geo, GParam const * 
 					k_mu_nu = param->d_k_twist[dirs_to_si(i,j)];
 					}
 		
-		if (twisted_bc == 1)
-			{
-			// P matrix
+		if (twisted_bc == 1){      
+
+#if NCOLOR == 2
+            // ---------- SU(2) CASE ----------
+            // P = i sigma1 -> (a0=0, a1=1, a2=0, a3=0)
+            Pmatrix.comp[0] = 0.0;
+            Pmatrix.comp[1] = 1.0;
+            Pmatrix.comp[2] = 0.0;
+            Pmatrix.comp[3] = 0.0;
+
+            // Q = i sigma3 -> (a0=0, a1=0, a2=0, a3=1)
+            Qmatrix.comp[0] = 0.0;
+            Qmatrix.comp[1] = 0.0;
+            Qmatrix.comp[2] = 0.0;
+            Qmatrix.comp[3] = 1.0;
+
+            // raise Q to k_mu_nu
+            one(&aux);
+            for (i=0; i<k_mu_nu; i++) times_equal(&aux, &Qmatrix);
+            equal(&Qmatrix, &aux);
+
+  #else
+  		double complex zf;
+		  if ((NCOLOR%2)==0) zf = cexp(I*PI/(double)NCOLOR);
+	  	else zf = 1.0 + 0.0*I;
+		
+      // P matrix
 			zero(&Pmatrix);
 			for(i=0; i<(NCOLOR-1); i++) Pmatrix.comp[m(i+1,i)] = conj(zf);
 			Pmatrix.comp[m(0,2)] = conj(zf);
@@ -125,6 +146,8 @@ void init_gauge_conf(Gauge_Conf *GC, Geometry const * const geo, GParam const * 
 			for(i=0; i<k_mu_nu; i++) times_equal(&aux,&Qmatrix);
 			equal(&Qmatrix,&aux);
 			unitarize(&Qmatrix);
+#endif
+         
 			}
 		
 		GC->update_index=0;
@@ -140,7 +163,7 @@ void init_gauge_conf(Gauge_Conf *GC, Geometry const * const geo, GParam const * 
 			}
 		}
   
-  init_twist_cond_from_file_with_name(GC, param, param->d_twist_file);
+  init_twist_cond_from_file_with_name(GC, geo, param, param->d_twist_file);
 
 #endif
 
@@ -304,23 +327,23 @@ void init_twist_cond_from_file_with_name(Gauge_Conf *GC, Geometry const * const 
 	int i, j, x_mu, x_nu;
 	int cartcoord[STDIM];
 	
+
 	//allocation of Z[r][j]  	
-	if(posix_memalign((void **)&(GC->Z), (size_t)INT_ALIGN, (size_t)geo->d_volume*sizeof(long*)) != 0)
+	if(posix_memalign((void **)&(GC->Z), (size_t)DOUBLE_ALIGN, (size_t)geo->d_volume*sizeof(double complex *)) != 0)
 		{
 		fprintf(stderr, "Problems allocating an array of ptrs to long! (%s, %d)\n", __FILE__, __LINE__);
 		exit(EXIT_FAILURE);
 		}
-	
+
 	for(r=0; r<(geo->d_volume); r++) {	
-    if(posix_memalign((void **)&(GC->Z[r]), (size_t)INT_ALIGN, (size_t)DNPLANES*sizeof(long*)) != 0)
+    if(posix_memalign((void **)&(GC->Z[r]), (size_t)DOUBLE_ALIGN, (size_t)DNPLANES*sizeof(double complex)) != 0)
 		{
 		fprintf(stderr, "Problems allocating an array of ptrs to long! (%s, %d)\n", __FILE__, __LINE__);
 		exit(EXIT_FAILURE);
 		}
   }
-	
+  
 	// initialization of Z[r][j]
-	
 	// start initializing them to 1
 	for(r=0; r<geo->d_volume; r++)
 		for(j=0; j<DNPLANES; j++)
@@ -328,7 +351,7 @@ void init_twist_cond_from_file_with_name(Gauge_Conf *GC, Geometry const * const 
 	
 	x_mu = 0;
 	x_nu = 0;
-	
+	    
 	if(param->d_start==2) // initialize from stored conf
 		{
 		read_twist_cond_from_file_with_name(&x_mu, &x_nu, geo, filename);
@@ -346,6 +369,9 @@ void init_twist_cond_from_file_with_name(Gauge_Conf *GC, Geometry const * const 
 					GC->Z[r][dirs_to_si(j,i)] = conj(GC->Z[r][dirs_to_si(i,j)]);								//for anticlockwise plaquette
 					}
 		}
+        
+ printf("ciao\n");
+ fflush(stdout);
 }
 
 void free_gauge_conf(Gauge_Conf *GC, Geometry const * const geo)
@@ -355,8 +381,14 @@ void free_gauge_conf(Gauge_Conf *GC, Geometry const * const geo)
   for(i=0; i<(geo->d_volume); i++)
      {
      free(GC->lattice[i]);
+#if WITH_TWIST
+     free(GC->Z[i]);
+#endif
      }
   free(GC->lattice);
+#if WITH_TWIST
+	free(GC->Z);
+#endif
 
   #ifdef THETA_MODE
     end_clover_array(GC, geo);
@@ -499,7 +531,7 @@ void write_conf_on_file(Gauge_Conf const * const GC, Geometry const * const geo,
   {
   write_conf_on_file_with_name(GC, geo, param->d_conf_file);
 #if WITH_TWIST 
-  write_twist_on_file_with_name(GC, param, param->d_twist_file);
+  write_twist_on_file_with_name(GC, geo, param, param->d_twist_file);
 #endif
   }
 

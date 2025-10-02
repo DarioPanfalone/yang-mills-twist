@@ -58,6 +58,7 @@ void real_main(char *in_file)
     // montecarlo
     time(&time1);
     // count starts from 1 to avoid problems using %
+
     for(count=1; count < param.d_sample + 1; count++)
        {
        update(&GC, &geo, &param);

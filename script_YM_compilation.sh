@@ -16,8 +16,8 @@ if [ "${ENABLE_OPENMP}" -eq '1' ]; then flag_openmp='--enable-use-openmp'; fi
 chmod +x configure
 if [ -d lib/.deps ]; then make clean; fi
 
-# standard configuration with gcc + standard -O3 optimizations
-./configure N_c=${NCOLORS} ST_dim=${STDIM} CC=gcc CFLAGS='-O3 -Wno-deprecated-declarations' ${flag_openmp} ${flag_theta}
+# standard configuration with gcc + standard -O3 optimizations 
+./configure N_c=${NCOLORS} ST_dim=${STDIM} CC=gcc CFLAGS=' -O3 -Wno-deprecated-declarations' ${flag_openmp} ${flag_theta}
 
 # optimized configuration for Marconi (optimized compilation with Intel compiler on Intel Skylake processors)
 # ./configure N_c=${NCOLORS} ST_dim=${STDIM} CC=icc CFLAGS='-O3 -axCORE-AVX512 -mtune=skylake -ip -ipo' LIBS="-ldl -lz -lc" ${flag_openmp} ${flag_theta}

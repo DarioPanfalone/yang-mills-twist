@@ -10,7 +10,7 @@ typedef struct{
     double *three_pts_r, *three_pts_i;
     double *two_pts_r, *two_pts_i;
     double *plaq_corr_r, *plaq_corr_i;
-    
+    double *aux_mom_poly_r, *aux_mom_poly_i;
     FILE* tubefilep;
     FILE* polyfilep;
     FILE* plaqfilep;

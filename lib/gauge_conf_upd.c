@@ -24,7 +24,9 @@ void calcstaples_wilson(Gauge_Conf const * const GC,
   int j, l;
   long k;
   GAUGE_GROUP link1, link2, link3, link12, stap;
-
+#if WITH_TWIST
+     double complex factor;
+#endif
   #ifdef DEBUG
   if(r >= geo->d_volume)
     {
@@ -64,7 +66,6 @@ void calcstaples_wilson(Gauge_Conf const * const GC,
      times_dag2(&link12, &link1, &link2);  // link12=link1*link2^{dag}
      times_dag2(&stap, &link12, &link3);   // stap=link12*stap^{dag}
 #if WITH_TWIST 
-     double complex factor;
      //twist (clockwise plaquette) modification
 	  factor=GC->Z[r][dirs_to_si(i,j)];		//Z_\mu\nu(x)
 	
@@ -94,7 +95,6 @@ void calcstaples_wilson(Gauge_Conf const * const GC,
      times_dag12(&link12, &link1, &link2); // link12=link1^{dag}*link2^{dag}
      times(&stap, &link12, &link3);        // stap=link12*link3
 #if WITH_TWIST 
-     double complex factor;	  
      //twist (anticlockwise plaquette) modification
 	  factor=GC->Z[k][dirs_to_si(j,i)];	//Z_\nu\mu(x-\nu) = conj(Z_\mu\nu(x-\nu))
 	

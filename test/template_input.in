@@ -3,17 +3,17 @@ size 8 8 8
 beta 10
 theta 0
 
-sample    500000
+sample    1000
 thermal   0
 overrelax 5
-measevery 500
+measevery 10
 # Twist parameters
-k_twist 1 0 0 # twist parameter on the plane (0,1), (0,2), ..., (0,STDIM-1), (1, 2), ...
+k_twist 0 0 1 # twist parameter on the plane (0,1), (0,2), ..., (0,STDIM-1), (1, 2), ...
 
 monomeas  0  # 1=monopoles measures are performed
 
 start                   3  # 0=ordered  1=random  2=from saved configuration 3=ordered with twisted bc
-saveconf_back_every     100000  # if 0 does not save, else save backup configurations every ... updates
+saveconf_back_every     500  # if 0 does not save, else save backup configurations every ... updates
 saveconf_analysis_every 0  # if 0 does not save, else save configurations for analysis every ... updates
 
 coolsteps  3     # number of cooling steps to be used
