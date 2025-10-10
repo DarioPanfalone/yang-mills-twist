@@ -56,6 +56,11 @@ double plaquettep(Gauge_Conf const * const GC,
    times_equal_dag(&matrix, &(GC->lattice[r][i]));
    times_equal(&matrix, &(GC->lattice[r][j]));
 
+#ifdef WITH_TWIST
+	//twist factor: Z_\mu\nu for clockwise plaquette with \mu < \nu, matrix is the anticlockwise plaquette
+	times_equal_complex(&matrix, GC->Z[r][dirs_to_si(j,i)]);	//Z_\nu\mu(x) = conj(Z_\mu\nu(x))
+#endif
+
    return retr(&matrix);
    }
 
@@ -97,7 +102,10 @@ double complex plaquettep_complex(Gauge_Conf const * const GC,
    times_equal_dag(&matrix, &(GC->lattice[nnp(geo, r, i)][j]));
    times_equal_dag(&matrix, &(GC->lattice[r][i]));
    times_equal(&matrix, &(GC->lattice[r][j]));
-
+#ifdef WITH_TWIST
+	//twist factor: Z_\mu\nu for clockwise plaquette with \mu < \nu, matrix is the anticlockwise plaquette
+	times_equal_complex(&matrix, GC->Z[r][dirs_to_si(j,i)]);	//Z_\mu\nu(x) = conj(Z_\nu\mu(x))
+#endif
    return retr(&matrix)+I*imtr(&matrix);
    }
 
@@ -138,6 +146,10 @@ void plaquettep_matrix(Gauge_Conf const * const GC,
    times_equal(matrix, &(GC->lattice[nnp(geo, r, i)][j]));
    times_equal_dag(matrix, &(GC->lattice[nnp(geo, r, j)][i]));
    times_equal_dag(matrix, &(GC->lattice[r][j]));
+#ifdef WITH_TWIST   
+   	//twist factor: Z_\mu\nu for clockwise plaquette with \mu < \nu, matrix is the anticlockwise plaquette
+	times_equal_complex(matrix, GC->Z[r][dirs_to_si(j,i)]);	//Z_\mu\nu(x) = conj(Z_\nu\mu(x))
+#endif   
    }
 
 
@@ -192,6 +204,9 @@ void clover(Gauge_Conf const * const GC,
    times_equal(&aux, &(GC->lattice[nnp(geo, r, i)][j]) );        // 2
    times_equal_dag(&aux, &(GC->lattice[nnp(geo, r, j)][i]) );    // 3
    times_equal_dag(&aux, &(GC->lattice[r][j]) );                 // 4
+#ifdef WITH_TWIST
+	times_equal_complex(&aux, GC->Z[r][dirs_to_si(i,j)]);		// twist anticlockwise
+#endif
    plus_equal(M, &aux);
 
    k=nnm(geo, r, j);
@@ -201,6 +216,9 @@ void clover(Gauge_Conf const * const GC,
    times_equal(&aux, &(GC->lattice[k][i]) );                     // 6
    times_equal(&aux, &(GC->lattice[nnp(geo, k, i)][j]) );        // 7
    times_equal_dag(&aux, &(GC->lattice[r][i]) );                 // 8
+#ifdef WITH_TWIST
+	times_equal_complex(&aux, GC->Z[k][dirs_to_si(i,j)]);		// twist anticlockwise
+#endif
    plus_equal(M, &aux);
 
    p=nnm(geo, r, i);
@@ -210,6 +228,10 @@ void clover(Gauge_Conf const * const GC,
    times_equal_dag(&aux, &(GC->lattice[nnm(geo, k, i)][j]) );    // 10
    times_equal(&aux, &(GC->lattice[nnm(geo, k, i)][i]) );        // 11
    times_equal(&aux, &(GC->lattice[k][j]) );                     // 12
+#ifdef WITH_TWIST
+	times_equal_complex(&aux, GC->Z[nnm(geo, k, i)][dirs_to_si(i,j)]);	// twist anticlockwise
+#endif
+
    plus_equal(M, &aux);
 
    // indietro-avanti
@@ -217,6 +239,10 @@ void clover(Gauge_Conf const * const GC,
    times_equal_dag(&aux, &(GC->lattice[nnp(geo, p, j)][i]) );     // 14
    times_equal_dag(&aux, &(GC->lattice[p][j]) );                  // 15
    times_equal(&aux, &(GC->lattice[p][i]) );                      // 16
+#ifdef WITH_TWIST
+	times_equal_complex(&aux, GC->Z[p][dirs_to_si(i,j)]);		// twist anticlockwise
+#endif
+
    plus_equal(M, &aux);
    }
 

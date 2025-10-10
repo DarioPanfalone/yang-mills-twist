@@ -67,8 +67,7 @@ void calcstaples_wilson(Gauge_Conf const * const GC,
      times_dag2(&stap, &link12, &link3);   // stap=link12*stap^{dag}
 #if WITH_TWIST 
      //twist (clockwise plaquette) modification
-	  factor=GC->Z[r][dirs_to_si(i,j)];		//Z_\mu\nu(x)
-	
+	  factor=GC->Z[r][dirs_to_si(i,j)];		//Z_\mu\nu(x) #		
 	  times_equal_complex(&stap, factor); // Z_\mu\nu(x) * staple
 #endif
      plus_equal(M, &stap);
@@ -96,7 +95,7 @@ void calcstaples_wilson(Gauge_Conf const * const GC,
      times(&stap, &link12, &link3);        // stap=link12*link3
 #if WITH_TWIST 
      //twist (anticlockwise plaquette) modification
-	  factor=GC->Z[k][dirs_to_si(j,i)];	//Z_\nu\mu(x-\nu) = conj(Z_\mu\nu(x-\nu))
+	  factor=GC->Z[k][dirs_to_si(j,i)];	//Z_\nu\mu(x-\nu) = conj(Z_\mu\nu(x-\nu)) #
 	
 	  times_equal_complex(&stap, factor); // Z_\mu\nu(x-\nu) * staple
 #endif

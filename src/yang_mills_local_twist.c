@@ -36,7 +36,6 @@ void real_main(char *in_file)
 
     // read input file
     readinput(in_file, &param);
-
     // initialize random generator
     initrand(param.d_randseed);
 

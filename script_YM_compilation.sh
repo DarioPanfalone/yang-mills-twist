@@ -1,7 +1,7 @@
 #!/bin/bash
 
 STDIM=3
-NCOLORS=3
+NCOLORS=2
 compile_targets='yang_mills_local yang_mills_local_twist'
 
 # 1=yes, 0=no

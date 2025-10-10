@@ -47,7 +47,7 @@
 #define HAVE_UNISTD_H 1
 
 /* Number of colors */
-#define NCOLOR 3
+#define NCOLOR 2
 
 /* Number of Higgs fields */
 #define NHIGGS 1

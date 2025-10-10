@@ -8,6 +8,8 @@
         "string_view": "c",
         "initializer_list": "c",
         "utility": "c",
-        "md5.h": "c"
+        "md5.h": "c",
+        "sun_monopoles.h": "c",
+        "cstdlib": "c"
     }
 }
