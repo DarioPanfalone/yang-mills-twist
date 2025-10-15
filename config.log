@@ -212,7 +212,7 @@ configure:4496: $? = 0
 configure:4496: result: yes
 configure:4509: checking for library containing MD5_Init
 configure:4539: gcc -o conftest  -O3 -Wno-deprecated-declarations   conftest.c  >&5
-/usr/bin/ld: /tmp/cclaAT5Y.o: in function `main':
+/usr/bin/ld: /tmp/cca1gteT.o: in function `main':
 conftest.c:(.text.startup+0xb): undefined reference to `MD5_Init'
 collect2: error: ld returned 1 exit status
 configure:4539: $? = 1
@@ -266,7 +266,7 @@ conftest.c:32:6: warning: conflicting types for built-in function 'sqrt'; expect
       |      ^~~~
 conftest.c:1:1: note: 'sqrt' is declared in header '<math.h>'
     1 | /* confdefs.h */
-/usr/bin/ld: /tmp/ccVhv0es.o: in function `main':
+/usr/bin/ld: /tmp/ccPzhmSf.o: in function `main':
 conftest.c:(.text.startup+0xb): undefined reference to `sqrt'
 collect2: error: ld returned 1 exit status
 configure:4601: $? = 1

@@ -370,34 +370,7 @@ void init_twist_cond_from_file_with_name(Gauge_Conf *GC, Geometry const * const 
 					GC->Z[r][dirs_to_si(j,i)] = conj(GC->Z[r][dirs_to_si(i,j)]);								//for anticlockwise plaquette
 					}
 		}
-    int count_nontrivial=0;
-for(r=0; r<geo->d_volume; r++)
- for(j=0; j<DNPLANES; j++)
-   if (cabs(GC->Z[r][j]-1.0)>1e-10) count_nontrivial++;
-printf("Nontrivial Z = %d\n", count_nontrivial);
 
-     // Debug
-for (int a=0; a<STDIM; a++)
-  for (int b=a+1; b<STDIM; b++) {
-    int si = dirs_to_si(a,b);
-    long cnt = 0;
-    for (long r=0; r<geo->d_volume; r++)
-      if (cabs(GC->Z[r][si]-1.0)>1e-12) cnt++;
-    printf("plane (%d,%d) -> si=%d, nontrivial Z count=%ld\n",
-           a, b, si, cnt);
-  }
-for (long r = 0; r < geo->d_volume; r++) {
-    int cc[STDIM];
-    si_to_cart(cc, r, geo);
-    for (int i=0; i<STDIM; i++)
-      for (int j=i+1; j<STDIM; j++) {
-        double complex z = GC->Z[r][dirs_to_si(i,j)];
-        if (cabs(z - 1.0) > 1e-12)
-          printf("Z(%d,%d) at site (%d,%d,%d,%d) = %.3f + i%.3f\n",
-                 i,j,cc[0],cc[1],cc[2],(STDIM==4)?cc[3]:0,
-                 creal(z), cimag(z));
-      }
-}
 }
 
 void free_gauge_conf(Gauge_Conf *GC, Geometry const * const geo)
