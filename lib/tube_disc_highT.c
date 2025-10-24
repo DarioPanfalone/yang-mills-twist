@@ -137,10 +137,11 @@ void compute_polyakov_tube_disc_highT(Gauge_Conf const *const GC,
       my_ptrs->aux_poly_i[rsp] = imtr(&matrix);
    }
 }
-/*
+
 void compute_polyakov_tube_mom_highT(Gauge_Conf const *const GC,
                                       Geometry const *const geo,
-                                      Tube_disc_ptrs *my_ptrs)
+                                      Tube_disc_ptrs *my_ptrs,
+                                      int n )
 {
    long rsp;
    for (int y=0;y<geo->d_size[2];y++){
@@ -169,17 +170,21 @@ void compute_polyakov_tube_mom_highT(Gauge_Conf const *const GC,
       int y=cart[2];
       int x=cart[1];
       
-      double = ((2*PI)/(geo -> d_inv_space_vol*NCOLOR));
-      phase = np.exp(- I * k * x);
-
-      my_ptrs -> aux_mom_poly_r[y] += retr(phase)*retr(&matrix) - imtr(phase)*imtr(&matrix);
-      my_ptrs -> aux_mom_poly_i[y] += imtr(phase)*retr(&matrix) + retr(phase)*imtr(&matrix);
+      double k = ((2.0 * PI * n * geo -> d_inv_space_vol)/(NCOLOR));
+      //double phase = exp(- I * k * x);
+      
+      my_ptrs -> aux_mom_poly_r[y] += cos(k * x)*retr(&matrix) + sin(k * x)*imtr(&matrix);
+      my_ptrs -> aux_mom_poly_i[y] += cos(k * x)*imtr(&matrix) - sin(k * x)*retr(&matrix);
 
       //my_ptrs->aux_poly_r[rsp] = retr(&matrix);
       //my_ptrs->aux_poly_i[rsp] = imtr(&matrix);
    }
+      for (int y=0; y<geo->d_size[2]; y++) {
+       my_ptrs->aux_mom_poly_r[y] *= geo->d_inv_space_vol;
+       my_ptrs->aux_mom_poly_i[y] *= geo->d_inv_space_vol;
+   }
 }
-*/
+
 void compute_plaquette_columns(Gauge_Conf const * const GC,
                                Geometry const * const geo,
                                GParam const * const param,
