@@ -103,6 +103,7 @@ bin_PROGRAMS = conf_check$(EXEEXT) debug_rng$(EXEEXT) \
 	yang_mills_tracedef_polycorr$(EXEEXT) \
 	yang_mills_tracedef_tube$(EXEEXT) \
 	yang_mills_polycorr_highT$(EXEEXT) \
+	yang_mills_polycorr_mom_twist$(EXEEXT) \
 	ym_measureonly_polycorr_highT$(EXEEXT) \
 	ym_measureonly_polylandscape$(EXEEXT) su3_barion$(EXEEXT) \
 	flux_picture$(EXEEXT)
@@ -224,6 +225,12 @@ am_yang_mills_polycorr_long_OBJECTS =  \
 yang_mills_polycorr_long_OBJECTS =  \
 	$(am_yang_mills_polycorr_long_OBJECTS)
 yang_mills_polycorr_long_LDADD = $(LDADD)
+am_yang_mills_polycorr_mom_twist_OBJECTS =  \
+	./src/yang_mills_polycorr_mom_twist.$(OBJEXT) \
+	./lib/tube_disc_highT.$(OBJEXT) $(am__objects_13)
+yang_mills_polycorr_mom_twist_OBJECTS =  \
+	$(am_yang_mills_polycorr_mom_twist_OBJECTS)
+yang_mills_polycorr_mom_twist_LDADD = $(LDADD)
 am_yang_mills_spectrum_OBJECTS = ./src/yang_mills_spectrum.$(OBJEXT) \
 	$(am__objects_13)
 yang_mills_spectrum_OBJECTS = $(am_yang_mills_spectrum_OBJECTS)
@@ -334,6 +341,7 @@ am__depfiles_remade = ./lib/$(DEPDIR)/aligncheck.Po \
 	./src/$(DEPDIR)/yang_mills_polycorr_higgs_long.Po \
 	./src/$(DEPDIR)/yang_mills_polycorr_highT.Po \
 	./src/$(DEPDIR)/yang_mills_polycorr_long.Po \
+	./src/$(DEPDIR)/yang_mills_polycorr_mom_twist.Po \
 	./src/$(DEPDIR)/yang_mills_spectrum.Po \
 	./src/$(DEPDIR)/yang_mills_t0.Po \
 	./src/$(DEPDIR)/yang_mills_tracedef.Po \
@@ -371,6 +379,7 @@ SOURCES = $(conf_check_SOURCES) $(debug_rng_SOURCES) \
 	$(yang_mills_polycorr_higgs_long_SOURCES) \
 	$(yang_mills_polycorr_highT_SOURCES) \
 	$(yang_mills_polycorr_long_SOURCES) \
+	$(yang_mills_polycorr_mom_twist_SOURCES) \
 	$(yang_mills_spectrum_SOURCES) $(yang_mills_t0_SOURCES) \
 	$(yang_mills_tracedef_SOURCES) \
 	$(yang_mills_tracedef_polycorr_SOURCES) \
@@ -394,6 +403,7 @@ DIST_SOURCES = $(conf_check_SOURCES) $(debug_rng_SOURCES) \
 	$(yang_mills_polycorr_higgs_long_SOURCES) \
 	$(yang_mills_polycorr_highT_SOURCES) \
 	$(yang_mills_polycorr_long_SOURCES) \
+	$(yang_mills_polycorr_mom_twist_SOURCES) \
 	$(yang_mills_spectrum_SOURCES) $(yang_mills_t0_SOURCES) \
 	$(yang_mills_tracedef_SOURCES) \
 	$(yang_mills_tracedef_polycorr_SOURCES) \
@@ -751,6 +761,11 @@ yang_mills_polycorr_highT_SOURCES = ./src/yang_mills_polycorr_highT.c \
                                   ./lib/tube_disc_highT.c \
                                   $(everything)
 
+yang_mills_polycorr_mom_twist_SOURCES = ./src/yang_mills_polycorr_mom_twist.c \
+                                  ./include/tube_disc_highT.h \
+                                  ./lib/tube_disc_highT.c \
+                                  $(everything)
+
 ym_measureonly_polycorr_highT_SOURCES = ./src/ym_measureonly_polycorr_highT.c \
                                       ./include/tube_disc_highT.h \
                                       ./lib/tube_disc_highT.c \
@@ -1018,6 +1033,12 @@ yang_mills_polycorr_highT$(EXEEXT): $(yang_mills_polycorr_highT_OBJECTS) $(yang_
 yang_mills_polycorr_long$(EXEEXT): $(yang_mills_polycorr_long_OBJECTS) $(yang_mills_polycorr_long_DEPENDENCIES) $(EXTRA_yang_mills_polycorr_long_DEPENDENCIES) 
 	@rm -f yang_mills_polycorr_long$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(yang_mills_polycorr_long_OBJECTS) $(yang_mills_polycorr_long_LDADD) $(LIBS)
+./src/yang_mills_polycorr_mom_twist.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
+
+yang_mills_polycorr_mom_twist$(EXEEXT): $(yang_mills_polycorr_mom_twist_OBJECTS) $(yang_mills_polycorr_mom_twist_DEPENDENCIES) $(EXTRA_yang_mills_polycorr_mom_twist_DEPENDENCIES) 
+	@rm -f yang_mills_polycorr_mom_twist$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(yang_mills_polycorr_mom_twist_OBJECTS) $(yang_mills_polycorr_mom_twist_LDADD) $(LIBS)
 ./src/yang_mills_spectrum.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
 
@@ -1147,6 +1168,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./src/$(DEPDIR)/yang_mills_polycorr_higgs_long.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./src/$(DEPDIR)/yang_mills_polycorr_highT.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./src/$(DEPDIR)/yang_mills_polycorr_long.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./src/$(DEPDIR)/yang_mills_polycorr_mom_twist.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./src/$(DEPDIR)/yang_mills_spectrum.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./src/$(DEPDIR)/yang_mills_t0.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./src/$(DEPDIR)/yang_mills_tracedef.Po@am__quote@ # am--include-marker
@@ -1501,6 +1523,7 @@ distclean: distclean-am
 	-rm -f ./src/$(DEPDIR)/yang_mills_polycorr_higgs_long.Po
 	-rm -f ./src/$(DEPDIR)/yang_mills_polycorr_highT.Po
 	-rm -f ./src/$(DEPDIR)/yang_mills_polycorr_long.Po
+	-rm -f ./src/$(DEPDIR)/yang_mills_polycorr_mom_twist.Po
 	-rm -f ./src/$(DEPDIR)/yang_mills_spectrum.Po
 	-rm -f ./src/$(DEPDIR)/yang_mills_t0.Po
 	-rm -f ./src/$(DEPDIR)/yang_mills_tracedef.Po
@@ -1601,6 +1624,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./src/$(DEPDIR)/yang_mills_polycorr_higgs_long.Po
 	-rm -f ./src/$(DEPDIR)/yang_mills_polycorr_highT.Po
 	-rm -f ./src/$(DEPDIR)/yang_mills_polycorr_long.Po
+	-rm -f ./src/$(DEPDIR)/yang_mills_polycorr_mom_twist.Po
 	-rm -f ./src/$(DEPDIR)/yang_mills_spectrum.Po
 	-rm -f ./src/$(DEPDIR)/yang_mills_t0.Po
 	-rm -f ./src/$(DEPDIR)/yang_mills_tracedef.Po

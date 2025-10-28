@@ -2,7 +2,7 @@
 
 STDIM=3
 NCOLORS=2
-compile_targets='yang_mills_local yang_mills_local_twist'
+compile_targets='yang_mills_local yang_mills_local_twist yang_mills_polycorr_mom_twist'
 
 # 1=yes, 0=no
 ENABLE_THETA=0

@@ -138,6 +138,7 @@ void compute_polyakov_tube_disc_highT(Gauge_Conf const *const GC,
    }
 }
 
+//moment
 void compute_polyakov_tube_mom_highT(Gauge_Conf const *const GC,
                                       Geometry const *const geo,
                                       Tube_disc_ptrs *my_ptrs,
@@ -150,7 +151,7 @@ void compute_polyakov_tube_mom_highT(Gauge_Conf const *const GC,
    }
    // compute all the polyakov
    #ifdef OPENMP_MODE
-   #pragma omp parallel for num_threads(NTHREADS) private(rsp)
+   #pragma omp parallel for num_threads(NTHREADS) private(rsp) reduction(+: my_ptrs -> aux_mom_poly_r[:geo->d_size[2]]) reduction(+: my_ptrs -> aux_mom_poly_i[:geo->d_size[2]])
    #endif
    for (rsp=0; rsp<geo->d_space_vol; rsp++) {
       long r;
@@ -179,10 +180,7 @@ void compute_polyakov_tube_mom_highT(Gauge_Conf const *const GC,
       //my_ptrs->aux_poly_r[rsp] = retr(&matrix);
       //my_ptrs->aux_poly_i[rsp] = imtr(&matrix);
    }
-      for (int y=0; y<geo->d_size[2]; y++) {
-       my_ptrs->aux_mom_poly_r[y] *= geo->d_inv_space_vol;
-       my_ptrs->aux_mom_poly_i[y] *= geo->d_inv_space_vol;
-   }
+ 
 }
 
 void compute_plaquette_columns(Gauge_Conf const * const GC,
@@ -404,6 +402,43 @@ void polyakov_corr_givenR(Geometry const * const geo,
    fprintf(my_ptrs->polyfilep, "%.12g %.12g ", two_pts_r, two_pts_i);
 }
 
+void polyakov_corr_mom_givenR(Geometry const * const geo,
+                              Tube_disc_ptrs const * const my_ptrs,
+                              int d)
+{
+   double two_pts_r = 0;
+   double two_pts_i = 0;
+
+   long y;
+
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for num_threads(NTHREADS) private(y) reduction(+: two_pts_r) reduction(+: two_pts_i)
+   #endif
+   for (y = 0; y < geo->d_size[2]; y++) {
+      int y_other = (int)(y+d) % geo->d_size[2];
+
+      // P_k(y)
+      double re1 = my_ptrs->aux_mom_poly_r[y];
+      double im1 = my_ptrs->aux_mom_poly_i[y];
+
+      // P_k^*(y + d)
+      double re2 =  my_ptrs->aux_mom_poly_r[y_other];
+      double im2 = -my_ptrs->aux_mom_poly_i[y_other];
+
+      double poly_prod_r = re1 * re2 - im1 * im2;
+      double poly_prod_i = re1 * im2 + im1 * re2;
+
+      two_pts_r += poly_prod_r;
+      two_pts_i += poly_prod_i;
+   }
+
+   two_pts_r *= geo->d_inv_space_vol;
+   two_pts_i *= geo->d_inv_space_vol;
+
+   fprintf(my_ptrs->polyfilep, "%.12g %.12g ", two_pts_r, two_pts_i);
+}
+
+
 void polyakov_corr_givenR_withAdj(Geometry const * const geo,
                                   Tube_disc_ptrs const * const my_ptrs,
                                   int d)
@@ -553,6 +588,22 @@ void perform_measures_two_pts(long update_index, Geometry const *const geo, GPar
    fprintf(my_ptrs->polyfilep, "\n");
 
    fflush(my_ptrs->polyfilep);
+}
+
+void perform_measures_two_pts_mom(long update_index,
+                                  Geometry const *const geo,
+                                  GParam const *const param,
+                                  Tube_disc_ptrs *my_ptrs,
+                                  int n)
+{
+    fprintf(my_ptrs->polyfilep, "%ld %d ", update_index, n);
+
+    for (int d = 0; d <= param->d_dist_poly; d++) {
+        polyakov_corr_mom_givenR(geo, my_ptrs, d);
+    }
+
+    fprintf(my_ptrs->polyfilep, "\n");
+    fflush(my_ptrs->polyfilep);
 }
 
 void perform_measures_two_pts_withAdj(long update_index,

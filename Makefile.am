@@ -23,6 +23,7 @@ bin_PROGRAMS = conf_check \
                yang_mills_tracedef_polycorr \
                yang_mills_tracedef_tube \
                yang_mills_polycorr_highT \
+               yang_mills_polycorr_mom_twist \
                ym_measureonly_polycorr_highT \
                ym_measureonly_polylandscape \
                su3_barion \
@@ -229,6 +230,11 @@ yang_mills_tracedef_tube_SOURCES=./src/yang_mills_tracedef_tube.c \
                                  $(everything)
 
 yang_mills_polycorr_highT_SOURCES=./src/yang_mills_polycorr_highT.c \
+                                  ./include/tube_disc_highT.h \
+                                  ./lib/tube_disc_highT.c \
+                                  $(everything)
+
+yang_mills_polycorr_mom_twist_SOURCES=./src/yang_mills_polycorr_mom_twist.c \
                                   ./include/tube_disc_highT.h \
                                   ./lib/tube_disc_highT.c \
                                   $(everything)

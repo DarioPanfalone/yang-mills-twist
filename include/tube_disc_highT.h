@@ -37,6 +37,12 @@ void perform_measures_two_pts(long update_index,
                               GParam const * const param,
                               Tube_disc_ptrs * my_ptrs);
 
+void perform_measures_two_pts_mom(long update_index,
+                                  Geometry const *const geo,
+                                  GParam const *const param,
+                                  Tube_disc_ptrs *my_ptrs,
+                                  int n);
+
 void perform_measures_plaqcor(long update_index,
                               Geometry const * const geo,
                               Tube_disc_ptrs const * const my_ptrs);
@@ -50,6 +56,11 @@ void compute_polyakov_tube_disc_highT(Gauge_Conf const * const GC,
                                       Geometry const * const geo,
                                       Tube_disc_ptrs * my_ptrs);
 
+void compute_polyakov_tube_mom_highT(Gauge_Conf const *const GC,
+                                      Geometry const *const geo,
+                                      Tube_disc_ptrs *my_ptrs,
+                                      int n );
+                                      
 void compute_plaquette_columns(Gauge_Conf const * const GC,
                                Geometry const * const geo,
                                GParam const * const param,
