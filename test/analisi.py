@@ -9,7 +9,7 @@ filename = "dati.dat"
 df = pd.read_csv(
     filename,
     delim_whitespace=True,
-    skiprows=2000,
+    skiprows=10000,
     names=["index_conf", "plaq_s", "plaq_t", "poly_re", "poly_im"]
 )
 

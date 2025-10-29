@@ -7,6 +7,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<time.h>
+#define WITH_TWIST 1 
 
 #ifdef OPENMP_MODE
   #include<omp.h>
@@ -72,14 +73,22 @@ void real_main(char *in_file)
 
        if(count % param.d_measevery ==0 && count >= param.d_thermal)
          {
+           //  smoothed copy
+           Gauge_Conf GC_smeared;
+           init_gauge_conf_from_gauge_conf(&GC_smeared, &GC, &geo);
+
+           //  APE SMEARING 
+            ape_smearing(&GC_smeared, &geo, 0.475, 20);
+           
             perform_measures_localobs(&GC, &geo, &param, datafilep, NULL);
             for (int n = 0; n < 2; n++) {
-            // preparation for the correlators
-            
+            // preparation for the correlators            
             compute_polyakov_tube_mom_highT(&GC, &geo, &tube_ptr,n);
 
             perform_measures_two_pts_mom(GC.update_index, &geo, &param, &tube_ptr,n);
             }
+          // clean
+          free_gauge_conf(&GC_smeared, &geo);
          }
 
        // save configuration for backup
@@ -136,25 +145,29 @@ void print_template_input(void)
     fprintf(fp, "size 4 4 4 4\n");
     fprintf(fp,"\n");
     fprintf(fp, "beta 5.705\n");
-    fprintf(fp, "theta 1.5\n");
+    fprintf(fp, "theta 0\n");
     fprintf(fp,"\n");
     fprintf(fp, "sample    10\n");
     fprintf(fp, "thermal   0\n");
     fprintf(fp, "overrelax 5\n");
     fprintf(fp, "measevery 1\n");
+    fprintf(fp,"# Twist parameters\n");
+  	fprintf(fp,"k_twist 0 0 0 1 0 0 # twist parameter on the plane (0,1), (0,2), ..., (0,STDIM-1), (1, 2), ...\n");
+  	fprintf(fp,"\n");
+    fprintf(fp, "monomeas  0  # 1=monopoles measures are performed\n");
     fprintf(fp,"\n");
-    fprintf(fp, "start                   0  # 0=ordered  1=random  2=from saved configuration\n");
+    fprintf(fp, "start                   3  # 0=ordered  1=random  2=from saved configuration 3=ordered with twisted bc\n");
     fprintf(fp, "saveconf_back_every     5  # if 0 does not save, else save backup configurations every ... updates\n");
-    fprintf(fp,"\n");
-    fprintf(fp, "#for Polyakov corrrelators\n");
-    fprintf(fp, "dist_poly               2  # maximum distance between the Polyakov loops\n");
+    fprintf(fp, "saveconf_analysis_every 5  # if 0 does not save, else save configurations for analysis every ... updates\n");
     fprintf(fp, "\n");
+    fprintf(fp, "coolsteps  3     # number of cooling steps to be used\n");
+    fprintf(fp, "coolrepeat 5     # number of times 'coolsteps' are repeated\n");
+    fprintf(fp,"\n");
     fprintf(fp, "#output files\n");
     fprintf(fp, "conf_file  conf.dat\n");
+    fprintf(fp, "twist_file twist.dat\n");
     fprintf(fp, "data_file  dati.dat\n");
-    fprintf(fp, "tube_file  tube.dat\n");
-    fprintf(fp, "poly_file  poly_corr.dat\n");
-    fprintf(fp, "plaq_file  plaq_corr.dat\n");
+    fprintf(fp, "mon_file   mon.dat\n");
     fprintf(fp, "log_file   log.dat\n");
     fprintf(fp, "\n");
     fprintf(fp, "randseed 0    #(0=time)\n");

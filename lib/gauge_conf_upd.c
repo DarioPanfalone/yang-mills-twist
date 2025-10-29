@@ -1264,7 +1264,7 @@ void gradflow_RKstep(Gauge_Conf *GC,
 
 
 // n step of ape smearing with parameter alpha
-// new=Proj[(1-alpha)old + alpha/STDIM *staple ]
+// new=Proj[(1-alpha)old + alpha/(STDIM-1) *staple ]
 void ape_smearing(Gauge_Conf *GC,
                   Geometry const * const geo,
                   double alpha,
